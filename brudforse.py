@@ -78,6 +78,7 @@ class XOR_SNN(nn.Module):
         super().__init__()
         self.n_out   = n_out
         self.tau_hub = tau_hub
+        
         self.encoder = encoding.PoissonEncoder()
 
         self.fc1  = layer.Linear(n_in,  n_h1, bias=False)
