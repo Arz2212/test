@@ -78,7 +78,7 @@ class XOR_SNN(nn.Module):
         super().__init__()
         self.n_out   = n_out
         self.tau_hub = tau_hub
-        
+
         self.encoder = encoding.PoissonEncoder()
 
         self.fc1  = layer.Linear(n_in,  n_h1, bias=False)
@@ -90,6 +90,7 @@ class XOR_SNN(nn.Module):
 
         self.ctx1 = layer.Linear(n_out, n_h1, bias=False)
         self.ctx2 = layer.Linear(n_out, n_h2, bias=False)
+
 
         self.hub_fc1_in = layer.Linear(n_h1, 1, bias=False)
         self.hub_lif1    = neuron.LIFNode(tau=tau_m_hab, v_threshold=v_thr_hab)
