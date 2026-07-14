@@ -81,6 +81,7 @@ class XOR_SNN(nn.Module):
 
         self.encoder = encoding.PoissonEncoder()
 
+
         self.fc1  = layer.Linear(n_in,  n_h1, bias=False)
         self.lif1 = neuron.LIFNode(tau=tau_m, v_threshold=v_thr)
         self.fc2  = layer.Linear(n_h1,  n_h2, bias=False)
@@ -102,15 +103,10 @@ class XOR_SNN(nn.Module):
     def _init_weights(self):
         for name, m in self.named_modules():
             if isinstance(m, layer.Linear):
-                fan_in, fan_out = m.weight.shape[1], m.weight.shape[0]
-                n = fan_in * fan_out
                 if 'hub' in name:
-                    lo, hi = -0.2, 0.5   
+                    nn.init.uniform_(m.weight, -0.05, 0.05)
                 else:
-                    lo, hi = -0.1, 0.3   
-                vals = torch.linspace(lo, hi, n).reshape(fan_out, fan_in)
-                with torch.no_grad():
-                    m.weight.copy_(vals)
+                    nn.init.uniform_(m.weight, -0.01, 0.01)
 
     def forward(self, x, T, csdp_learners=None, sup_learner=None,
                 phase=1.0, labels=None, ctx_scale=1.5):
@@ -275,8 +271,6 @@ search_space = {
     "tau_m_hab": hp.uniform("tau_m_hab",   2.0, 8.0),   
     "tau_z":     hp.uniform("tau_z",       2.0, 8.0), 
     "w_clip":    hp.uniform("w_clip",      0.5, 3.0),   
-
-
     "alpha_csdp_log": hp.uniform("alpha_csdp_log", math.log10(0.001), math.log10(0.2)),
     "alpha_ctx_log":  hp.uniform("alpha_ctx_log",  math.log10(0.001), math.log10(0.3)),
     "alpha_sup_log":  hp.uniform("alpha_sup_log",  math.log10(0.001), math.log10(0.2)),
