@@ -8,7 +8,7 @@ import numpy as np
 from brudforse import XOR_SNN, CSDPLearner, SupervisedLearner, make_xor_dataset, DEVICE
 
 
-T                  = 1000
+T                  = 100
 TRAIN_ONLY_EPOCHS  = 100    
 TRAIN_EVAL_EPOCHS  = 30     
 VERBOSE            = True   

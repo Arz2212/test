@@ -3,7 +3,7 @@
 
 import torch, torch.nn.functional as F, numpy as np, argparse, time
 from torch.utils.data import DataLoader, TensorDataset
-from spikingjelly.activation_based import neuron, functional
+from spikingjelly.activation_based import neuron, layer, functional
 
 
 T           = 50
@@ -17,6 +17,10 @@ goodness_thr = 10.0
 eta         = 0.002
 weight_bound = 1.0
 seed        = 1234
+
+tau_m_hab   = 1.8
+v_thr_hab   = 0.07
+tau_hub     = 3
 
 in_dim      = 784
 out_dim     = 10
@@ -58,6 +62,20 @@ class CSDPSNN(torch.nn.Module):
         self.lif_out = neuron.LIFNode(tau=tau_sj, v_threshold=v_thr, v_reset=0.0).to(device)
 
 
+        self.hub_fc1 = layer.Linear(hid1, 1, bias=False).to(device)
+        self.hub_fc2 = layer.Linear(hid2, 1, bias=False).to(device)
+        self.hub_lif1 = neuron.LIFNode(tau=tau_m_hab, v_threshold=v_thr_hab, v_reset=0.0).to(device)
+        self.hub_lif2 = neuron.LIFNode(tau=tau_m_hab, v_threshold=v_thr_hab, v_reset=0.0).to(device)
+
+        torch.nn.init.constant_(self.hub_fc1.weight, 0.2)
+        torch.nn.init.constant_(self.hub_fc2.weight, 0.2)
+
+        self.hub_fc1.weight.requires_grad_(False)
+        self.hub_fc2.weight.requires_grad_(False)
+        self.register_buffer('zmax1', torch.tensor(0.0))
+        self.register_buffer('zmax2', torch.tensor(0.0))
+
+
         self.opt_W1  = torch.optim.Adam([self.W1],  lr=eta)
         self.opt_M1  = torch.optim.Adam([self.M1],  lr=eta)
         self.opt_V2y = torch.optim.Adam([self.V2y], lr=eta)
@@ -67,11 +85,13 @@ class CSDPSNN(torch.nn.Module):
         self.opt_C3  = torch.optim.Adam([self.C3],  lr=eta)
 
 
-    def goodness_mod(self, z, lab, thr=goodness_thr):
-        """Модулятор: dL/dz контрастного goodness-лосса."""
-        g = z.pow(2).sum(dim=1, keepdim=True) - thr
-        p = torch.sigmoid(g)
-        return (p - lab.float()) * 2.0 * z
+    def hub_mod(self, z, hub, phase, zmax_buf):
+
+        cur_max = hub.max().item()
+        if cur_max > zmax_buf.item():
+            zmax_buf.fill_(cur_max)
+        factor = (hub / zmax_buf)**2 - phase
+        return factor * z
 
 
     def forward(self, x, y, mask, learn=True):
@@ -79,6 +99,8 @@ class CSDPSNN(torch.nn.Module):
         functional.reset_net(self.lif1)
         functional.reset_net(self.lif2)
         functional.reset_net(self.lif_out)
+        functional.reset_net(self.hub_lif1)
+        functional.reset_net(self.hub_lif2)
 
         tr1 = torch.zeros(B, hid1, device=dv)     
         tr2 = torch.zeros(B, hid2, device=dv)      
@@ -86,7 +108,10 @@ class CSDPSNN(torch.nn.Module):
         spk_cnt = torch.zeros(B, out_dim, device=dv)
         z1_prev = torch.zeros(B, hid1, device=dv)
         z2_prev = torch.zeros(B, hid2, device=dv)
+        hub1 = torch.zeros(B, 1, device=dv)
+        hub2 = torch.zeros(B, 1, device=dv)
         d = dt / tau_tr
+        decay_hub = 1.0 / tau_hub 
 
         for _ in range(T):
             z0 = (torch.rand(B, in_dim, device=dv) < x).float()
@@ -95,13 +120,19 @@ class CSDPSNN(torch.nn.Module):
             I1 = (z0 @ self.W1) * R_m - (z1_prev @ self.M1) * inh_R + (y @ self.V2y) * R_m
             z1 = self.lif1(I1)
             tr1 = tr1 + d * (z1 - tr1)
-            mod1 = self.goodness_mod(tr1, mask)
+  
+            h1_spk = self.hub_lif1(self.hub_fc1(z1))
+            hub1 = hub1 + decay_hub * (-hub1 + h1_spk.float())
+            mod1 = self.hub_mod(tr1, hub1, mask, self.zmax1)
 
             # слой 3
             I2 = (z1 @ self.W2) * R_m - (z2_prev @ self.M2) * inh_R + (y @ self.V3y) * R_m
             z2 = self.lif2(I2)
             tr2 = tr2 + d * (z2 - tr2)
-            mod2 = self.goodness_mod(tr2, mask)
+  
+            h2_spk = self.hub_lif2(self.hub_fc2(z2))
+            hub2 = hub2 + decay_hub * (-hub2 + h2_spk.float())
+            mod2 = self.hub_mod(tr2, hub2, mask, self.zmax2)
 
             # выходной слой 
             zy = self.lif_out(z2 @ self.C3)
