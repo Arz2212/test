@@ -104,7 +104,7 @@ class XOR_SNN(nn.Module):
         for name, m in self.named_modules():
             if isinstance(m, layer.Linear):
                 if 'hub' in name:
-                    nn.init.uniform_(m.weight, -0.05, 0.05)
+                    nn.init.constant_(m.weight, 0.2)
                 else:
                     nn.init.uniform_(m.weight, -0.01, 0.01)
 
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     )
 
     tuner = tune.Tuner(
-        tune.with_resources(objective, {"cpu": 0.5, "gpu": 0.05}),
+        tune.with_resources(objective, {"cpu": 1, "gpu": 0}),
         tune_config=tune.TuneConfig(
             search_alg=algo,
             num_samples=10000,

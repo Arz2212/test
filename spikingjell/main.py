@@ -16,7 +16,7 @@ inh_R       = 0.01
 goodness_thr = 10.0
 eta         = 0.002
 weight_bound = 1.0
-seed        = 1234
+seed        = 5464
 
 tau_m_hab   = 1.8
 v_thr_hab   = 0.07
