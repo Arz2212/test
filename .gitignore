@@ -1,1 +1,23 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# Данные и логи экспериментов
 jax_version/
+ray_results/
+**/ray_results/
+spikingjell/data/
+data/
+
+# Временные файлы и IDE
+.vscode/
+.idea/
+*.swp

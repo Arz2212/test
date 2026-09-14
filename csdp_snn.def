@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: python:3.10-slim
+
+# Код задачи зашиваем в образ (данные MNIST монтируем снаружи через --bind).
+# Путь относителен к каталогу, из которого запускается `apptainer build`
+# (запускать из корня проекта /home/arz/SNN).
+%files
+    spikingjell/main.py /app/main.py
+
+%post
+    export PIP_NO_CACHE_DIR=1
+    apt-get update
+    apt-get install -y --no-install-recommends libgomp1
+    rm -rf /var/lib/apt/lists/*
+
+    pip install --upgrade pip
+    # ВАЖНО: сначала torch/torchvision ИЗ CPU-ИНДЕКСА,
+    # иначе spikingjelly подтянет CUDA-версию torch.
+    pip install torch==2.11.0 torchvision==0.26.0 \
+        --index-url https://download.pytorch.org/whl/cpu
+    pip install \
+        spikingjelly==0.0.0.0.14 \
+        "ray[tune]==2.52.1" \
+        hyperopt==0.2.7 \
+        numpy==2.2.6
+
+%environment
+    export OMP_NUM_THREADS=1
+    export LC_ALL=C.UTF-8
+
+%runscript
+    exec python /app/main.py "$@"

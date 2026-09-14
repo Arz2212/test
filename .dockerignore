@@ -1,0 +1,10 @@
+# Не тащим в build-context docker'а лишнее (особенно данные и .venv)
+.git
+.venv
+**/__pycache__
+*.pyc
+jax_version
+**/*.npy
+**/ray_results
+*.sif
+uv.lock
