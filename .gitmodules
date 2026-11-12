@@ -1,0 +1,4 @@
+[submodule "contrastive-signal-dependent-plasticity"]
+	path = contrastive-signal-dependent-plasticity
+	url = https://github.com/ago109/contrastive-signal-dependent-plasticity
+	ignore = untracked

@@ -2,6 +2,7 @@
 
 
 import torch, torch.nn.functional as F, numpy as np, argparse, time
+from pathlib import Path
 from torch.utils.data import DataLoader, TensorDataset
 from spikingjelly.activation_based import neuron, layer, functional
 
@@ -11,16 +12,19 @@ dt          = 3.0
 tau_m       = 100.0
 v_thr       = 0.055
 tau_tr      = 13.0
-R_m         = 0.1
+R_m         = 1.0
 inh_R       = 0.01
 goodness_thr = 10.0
 eta         = 0.002
 weight_bound = 1.0
+w_decay     = 5e-5
 seed        = 1234
 
-tau_m_hab   = 1.8
-v_thr_hab   = 0.07
-tau_hub     = 3
+hub_power   = 1.20313
+hub_w_init  = 0.0503053
+tau_hub     = 4.39997
+tau_m_hab   = 4.87563
+v_thr_hab   = 0.249441
 
 in_dim      = 784
 out_dim     = 10
@@ -31,7 +35,7 @@ batch_size      = 500
 dev_batch_size  = 1000
 num_epochs      = 30
 
-data_dir = "/home/arz/SNN/jax_version/cSNN/data/mnist/mnist"
+data_dir = str(Path(__file__).resolve().parent / "data" / "mnist")
 
 
 
@@ -67,13 +71,13 @@ class CSDPSNN(torch.nn.Module):
         self.hub_lif1 = neuron.LIFNode(tau=tau_m_hab, v_threshold=v_thr_hab, v_reset=0.0).to(device)
         self.hub_lif2 = neuron.LIFNode(tau=tau_m_hab, v_threshold=v_thr_hab, v_reset=0.0).to(device)
 
-        torch.nn.init.constant_(self.hub_fc1.weight, 0.2)
-        torch.nn.init.constant_(self.hub_fc2.weight, 0.2)
+        torch.nn.init.constant_(self.hub_fc1.weight, hub_w_init)
+        torch.nn.init.constant_(self.hub_fc2.weight, hub_w_init)
 
         self.hub_fc1.weight.requires_grad_(False)
         self.hub_fc2.weight.requires_grad_(False)
-        self.register_buffer('zmax1', torch.tensor(0.0))
-        self.register_buffer('zmax2', torch.tensor(0.0))
+        self.register_buffer('zmax1', torch.tensor(0.01))
+        self.register_buffer('zmax2', torch.tensor(0.01))
 
 
         self.opt_W1  = torch.optim.Adam([self.W1],  lr=eta)
@@ -90,7 +94,7 @@ class CSDPSNN(torch.nn.Module):
         cur_max = hub.max().item()
         if cur_max > zmax_buf.item():
             zmax_buf.fill_(cur_max)
-        factor = (hub / zmax_buf)**2 - phase
+        factor = (hub / zmax_buf)**hub_power - phase
         return factor * z
 
 
@@ -142,13 +146,19 @@ class CSDPSNN(torch.nn.Module):
 
 
             if learn:
-                csdp_step(self.opt_W1,  self.W1,  z0.T      @ (mod1 * R_m),   (-weight_bound, weight_bound))
-                csdp_step(self.opt_M1,  self.M1,  z1_prev.T @ (mod1 * inh_R), (0, weight_bound), self.m1_mask)
-                csdp_step(self.opt_V2y, self.V2y, y.T       @ (mod1 * R_m),   (-weight_bound, weight_bound))
+                csdp_step(self.opt_W1,  self.W1,  z0.T      @ (mod1 * R_m),   (-weight_bound, weight_bound),
+                          decay=csdp_decay(z0, z1))
+                csdp_step(self.opt_M1,  self.M1,  z1_prev.T @ (mod1 * inh_R), (0, weight_bound), self.m1_mask,
+                          decay=csdp_decay(z1_prev, z1))
+                csdp_step(self.opt_V2y, self.V2y, y.T       @ (mod1 * R_m),   (-weight_bound, weight_bound),
+                          decay=csdp_decay(y, z1))
 
-                csdp_step(self.opt_W2,  self.W2,  z1.T      @ (mod2 * R_m),   (-weight_bound, weight_bound))
-                csdp_step(self.opt_M2,  self.M2,  z2_prev.T @ (mod2 * inh_R), (0, weight_bound), self.m2_mask)
-                csdp_step(self.opt_V3y, self.V3y, y.T       @ (mod2 * R_m),   (-weight_bound, weight_bound))
+                csdp_step(self.opt_W2,  self.W2,  z1.T      @ (mod2 * R_m),   (-weight_bound, weight_bound),
+                          decay=csdp_decay(z1, z2))
+                csdp_step(self.opt_M2,  self.M2,  z2_prev.T @ (mod2 * inh_R), (0, weight_bound), self.m2_mask,
+                          decay=csdp_decay(z2_prev, z2))
+                csdp_step(self.opt_V3y, self.V3y, y.T       @ (mod2 * R_m),   (-weight_bound, weight_bound),
+                          decay=csdp_decay(y, z2))
 
                 hebb_step(self.opt_C3, self.C3, z2.T @ dmu, (-weight_bound, weight_bound))
 
@@ -161,8 +171,12 @@ def nn_param(*shape):
     torch.nn.init.uniform_(p, -1, 1)
     return p
 
-def csdp_step(opt, param, grad, bounds, mask=None):
+def csdp_decay(pre, post):
+    return -w_decay * ((1.0 - pre).T @ post)
+
+def csdp_step(opt, param, grad, bounds, mask=None, decay=None):
     opt.zero_grad(); param.grad = grad; opt.step()
+    if decay is not None: param.data.add_(decay)
     if mask is not None: param.data.mul_(mask)
     param.data.clamp_(*bounds)
 
@@ -217,13 +231,18 @@ def train_epoch(model, loader, device, epoch):
 def main():
     p = argparse.ArgumentParser(description="CSDP-SNN (SpikingJelly)")
     p.add_argument("--epochs", type=int, default=num_epochs)
-    p.add_argument("--device", type=str, default="cpu")
+    p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
 
     device = torch.device(args.device)
 
 
     torch.manual_seed(seed); np.random.seed(seed)
+
+    required = ("trainX.npy", "trainY.npy", "testX.npy", "testY.npy")
+    if not all((Path(data_dir) / name).exists() for name in required):
+        from download_mnist import ensure_mnist
+        ensure_mnist(data_dir)
 
     X_tr = torch.from_numpy(np.load(f"{data_dir}/trainX.npy")).float()
     Y_tr = torch.from_numpy(np.load(f"{data_dir}/trainY.npy")).float()
