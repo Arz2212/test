@@ -256,7 +256,7 @@ class ConvCSDPHubSNN(torch.nn.Module):
         self.readout_conv_dim = self.conv_feat_dim
         self.readout_fc_dim = args.hid_fc
         if args.readout_all and self.conv2 is not None:
-            self.c1_pool_ro = 2
+            self.c1_pool_ro = 2 if self.conv1.pool_hw >= 14 else 1
             ro1_hw = self.conv1.pool_hw // self.c1_pool_ro
             self.readout_c1_dim = ro1_hw * ro1_hw * args.c1
         else:
@@ -361,10 +361,10 @@ class ConvCSDPHubSNN(torch.nn.Module):
                         stride=layer_mod.stride,
                         padding=layer_mod.padding,
                     )
-                    # Channel-wise lateral correlation: sum_{b,h,w} z_prev[b,c1,h,w] * mod[b,c2,h,w]
-                    zp_c = z_prev.permute(0, 2, 3, 1).reshape(-1, C)
-                    m_c = mod_4d.permute(0, 2, 3, 1).reshape(-1, C)
-                    gM = zp_c.T @ (m_c * (self.args.inh_R * inv_loc))
+                    # Zero-copy channel-wise lateral correlation: sum_{b,h,w} z_prev[b,c1,h,w] * mod[b,c2,h,w]
+                    zp_bcn = z_prev.reshape(B, C, -1)
+                    m_bcn = (mod_4d * (self.args.inh_R * inv_loc)).reshape(B, C, -1)
+                    gM = torch.bmm(zp_bcn, m_bcn.transpose(1, 2)).sum(dim=0)
                     gVy = y.T @ (mod_flat * self.args.R_y)
                 layer_mod.W.grad = gW.float()
                 layer_mod.M.grad = gM.float()
@@ -459,7 +459,11 @@ class ConvCSDPHubSNN(torch.nn.Module):
                     h2_sum += h2_v
                 conv_ro = p2_img.reshape(B, -1)
                 if cnt_c1 is not None:
-                    c1_ro = F.max_pool2d(p1_img, self.c1_pool_ro, self.c1_pool_ro).reshape(B, -1)
+                    c1_ro = (
+                        F.max_pool2d(p1_img, self.c1_pool_ro, self.c1_pool_ro).reshape(B, -1)
+                        if self.c1_pool_ro > 1
+                        else p1_img.reshape(B, -1)
+                    )
                     cnt_c1 = cnt_c1 + c1_ro
                 else:
                     c1_ro = None
