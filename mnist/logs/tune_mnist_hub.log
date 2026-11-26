@@ -1,0 +1,144 @@
+CPU: 12 | GPU: 1 | device: cuda | gpu/trial: 0.25 | cpu/trial: 1 | concurrent: 4 | trials: 1000 | hid1=5000, hid2=1000
+Fixed parameters from mnist_solver.py: T=50, dt=3.0, tau_m=100.0, v_thr=0.055, tau_tr=13.0, R_m=1.0, inh_R=0.01, eta=0.002, weight_bound=1.0, seed=1234
+2026-11-24 12:03:07,919	WARNING authentication_token_setup.py:88 -- Token authentication is enabled for this Ray cluster. Set RAY_AUTH_MODE=disabled to opt out. For more information, see https://docs.ray.io/en/latest/ray-security/token-auth.html
+2026-11-24 12:03:13,759	INFO worker.py:2038 -- Started a local Ray instance.
+╭───────────────────────────────────────────────────────────────────╮
+│ Configuration for experiment     mnist_solver_hub_only_hyperopt   │
+├───────────────────────────────────────────────────────────────────┤
+│ Search algorithm                 SearchGenerator                  │
+│ Scheduler                        FIFOScheduler                    │
+│ Number of trials                 1000                             │
+╰───────────────────────────────────────────────────────────────────╯
+
+View detailed results here: /content/snn/ray_results/mnist_solver_hub_only_hyperopt
+To visualize your results with TensorBoard, run: `tensorboard --logdir /tmp/ray/session_2026-11-24_12-03-07_920228_19854/artifacts/2026-11-24_12-03-17/mnist_solver_hub_only_hyperopt/driver_artifacts`
+[NEW BEST] Trial    1/1000 | test_acc=0.9372 (train=0.9481) | [1.7m] | tau_m_hab=4.87563, v_thr_hab=0.249441, tau_hub=4.39997, hub_power=1.20313, hub_w_init=0.0503053
+[NEW BEST] Trial    6/1000 | test_acc=0.9501 (train=0.9627) | [3.3m] | tau_m_hab=6.79107, v_thr_hab=0.926026, tau_hub=1.50715, hub_power=1.41543, hub_w_init=0.0949892
+[NEW BEST] Trial    9/1000 | test_acc=0.9505 (train=0.9593) | [4.7m] | tau_m_hab=2.61676, v_thr_hab=0.177332, tau_hub=1.61393, hub_power=1.84491, hub_w_init=0.00707313
+[Progress] Trial   10/1000 | last_acc=0.8754 (train=0.9390) | best_acc=0.9505 | [4.9m, 2.0 tr/m, ETA 485.7m]
+[Progress] Trial   20/1000 | last_acc=0.7620 (train=0.8895) | best_acc=0.9505 | [8.1m, 2.5 tr/m, ETA 396.6m]
+[NEW BEST] Trial   28/1000 | test_acc=0.9523 (train=0.9614) | [11.2m] | tau_m_hab=3.35278, v_thr_hab=0.28731, tau_hub=2.14413, hub_power=1.66437, hub_w_init=0.0109603
+[Progress] Trial   30/1000 | last_acc=0.9310 (train=0.9484) | best_acc=0.9523 | [11.9m, 2.5 tr/m, ETA 386.3m]
+[Progress] Trial   40/1000 | last_acc=0.9184 (train=0.9544) | best_acc=0.9523 | [15.8m, 2.5 tr/m, ETA 380.4m]
+[Progress] Trial   50/1000 | last_acc=0.9413 (train=0.9588) | best_acc=0.9523 | [19.0m, 2.6 tr/m, ETA 361.7m]
+[Progress] Trial   60/1000 | last_acc=0.6376 (train=0.9166) | best_acc=0.9523 | [23.2m, 2.6 tr/m, ETA 363.4m]
+[Progress] Trial   70/1000 | last_acc=0.8877 (train=0.9370) | best_acc=0.9523 | [26.7m, 2.6 tr/m, ETA 354.8m]
+[Progress] Trial   80/1000 | last_acc=0.8659 (train=0.9284) | best_acc=0.9523 | [30.0m, 2.7 tr/m, ETA 345.2m]
+[Progress] Trial   90/1000 | last_acc=0.9236 (train=0.9491) | best_acc=0.9523 | [34.4m, 2.6 tr/m, ETA 347.7m]
+[NEW BEST] Trial   99/1000 | test_acc=0.9533 (train=0.9554) | [37.5m] | tau_m_hab=7.28259, v_thr_hab=0.19706, tau_hub=3.61576, hub_power=1.3554, hub_w_init=0.0219381
+[Progress] Trial  100/1000 | last_acc=0.8687 (train=0.9366) | best_acc=0.9533 | [37.6m, 2.7 tr/m, ETA 338.2m]
+[36m(objective pid=36166)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7f36cde0d9e0>
+[36m(objective pid=36166)[0m Traceback (most recent call last):
+[36m(objective pid=36166)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=36166)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=36166)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=36166)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=36166)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=36166)[0m SystemExit: 1
+[Progress] Trial  110/1000 | last_acc=0.9523 (train=0.9571) | best_acc=0.9533 | [41.5m, 2.7 tr/m, ETA 335.7m]
+[Progress] Trial  120/1000 | last_acc=0.2802 (train=0.9284) | best_acc=0.9533 | [45.3m, 2.7 tr/m, ETA 332.0m]
+[Progress] Trial  130/1000 | last_acc=0.9399 (train=0.9511) | best_acc=0.9533 | [48.5m, 2.7 tr/m, ETA 324.5m]
+[Progress] Trial  140/1000 | last_acc=0.8690 (train=0.9379) | best_acc=0.9533 | [52.8m, 2.6 tr/m, ETA 324.6m]
+[NEW BEST] Trial  148/1000 | test_acc=0.9541 (train=0.9629) | [55.7m] | tau_m_hab=3.58819, v_thr_hab=0.0857975, tau_hub=2.43744, hub_power=1.61859, hub_w_init=0.00282662
+[Progress] Trial  150/1000 | last_acc=0.9471 (train=0.9565) | best_acc=0.9541 | [56.1m, 2.7 tr/m, ETA 317.9m]
+[Progress] Trial  160/1000 | last_acc=0.9522 (train=0.9626) | best_acc=0.9541 | [59.8m, 2.7 tr/m, ETA 313.9m]
+[Progress] Trial  170/1000 | last_acc=0.9397 (train=0.9576) | best_acc=0.9541 | [63.8m, 2.7 tr/m, ETA 311.3m]
+[Progress] Trial  180/1000 | last_acc=0.7947 (train=0.9343) | best_acc=0.9541 | [67.0m, 2.7 tr/m, ETA 305.1m]
+[Progress] Trial  190/1000 | last_acc=0.9406 (train=0.9549) | best_acc=0.9541 | [71.3m, 2.7 tr/m, ETA 303.9m]
+[Progress] Trial  200/1000 | last_acc=0.9444 (train=0.9582) | best_acc=0.9541 | [74.7m, 2.7 tr/m, ETA 298.7m]
+[Progress] Trial  210/1000 | last_acc=0.8811 (train=0.9332) | best_acc=0.9541 | [78.1m, 2.7 tr/m, ETA 293.7m]
+[Progress] Trial  220/1000 | last_acc=0.9465 (train=0.9580) | best_acc=0.9541 | [82.3m, 2.7 tr/m, ETA 291.7m]
+[Progress] Trial  230/1000 | last_acc=0.9284 (train=0.9478) | best_acc=0.9541 | [85.5m, 2.7 tr/m, ETA 286.3m]
+[Progress] Trial  240/1000 | last_acc=0.8744 (train=0.9348) | best_acc=0.9541 | [89.5m, 2.7 tr/m, ETA 283.6m]
+[Progress] Trial  250/1000 | last_acc=0.9458 (train=0.9533) | best_acc=0.9541 | [93.1m, 2.7 tr/m, ETA 279.4m]
+[Progress] Trial  260/1000 | last_acc=0.9520 (train=0.9584) | best_acc=0.9541 | [96.7m, 2.7 tr/m, ETA 275.2m]
+[Progress] Trial  270/1000 | last_acc=0.9526 (train=0.9620) | best_acc=0.9541 | [100.7m, 2.7 tr/m, ETA 272.3m]
+[Progress] Trial  280/1000 | last_acc=0.9002 (train=0.9563) | best_acc=0.9541 | [104.0m, 2.7 tr/m, ETA 267.3m]
+[Progress] Trial  290/1000 | last_acc=0.9300 (train=0.9463) | best_acc=0.9541 | [108.1m, 2.7 tr/m, ETA 264.6m]
+[Progress] Trial  300/1000 | last_acc=0.9405 (train=0.9525) | best_acc=0.9541 | [111.5m, 2.7 tr/m, ETA 260.1m]
+[Progress] Trial  310/1000 | last_acc=0.9513 (train=0.9639) | best_acc=0.9541 | [115.4m, 2.7 tr/m, ETA 256.8m]
+[Progress] Trial  320/1000 | last_acc=0.9355 (train=0.9629) | best_acc=0.9541 | [119.0m, 2.7 tr/m, ETA 252.9m]
+[36m(objective pid=67222)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7f3548a699e0>
+[36m(objective pid=67222)[0m Traceback (most recent call last):
+[36m(objective pid=67222)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=67222)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=67222)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=67222)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=67222)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=67222)[0m SystemExit: 1
+[Progress] Trial  330/1000 | last_acc=0.9404 (train=0.9535) | best_acc=0.9541 | [122.6m, 2.7 tr/m, ETA 248.9m]
+[Progress] Trial  340/1000 | last_acc=0.9512 (train=0.9658) | best_acc=0.9541 | [126.5m, 2.7 tr/m, ETA 245.6m]
+[Progress] Trial  350/1000 | last_acc=0.9451 (train=0.9554) | best_acc=0.9541 | [129.9m, 2.7 tr/m, ETA 241.2m]
+[36m(objective pid=71945)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7e7927ac59e0>
+[36m(objective pid=71945)[0m Traceback (most recent call last):
+[36m(objective pid=71945)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=71945)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=71945)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=71945)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=71945)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=71945)[0m SystemExit: 1
+[Progress] Trial  360/1000 | last_acc=0.9349 (train=0.9506) | best_acc=0.9541 | [134.0m, 2.7 tr/m, ETA 238.2m]
+[36m(objective pid=74292)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7e7f608ed9e0>
+[36m(objective pid=74292)[0m Traceback (most recent call last):
+[36m(objective pid=74292)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=74292)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=74292)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=74292)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=74292)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=74292)[0m SystemExit: 1
+[Progress] Trial  370/1000 | last_acc=0.9485 (train=0.9625) | best_acc=0.9541 | [137.3m, 2.7 tr/m, ETA 233.8m]
+[Progress] Trial  380/1000 | last_acc=0.1010 (train=0.1058) | best_acc=0.9541 | [141.3m, 2.7 tr/m, ETA 230.5m]
+[Progress] Trial  390/1000 | last_acc=0.9456 (train=0.9504) | best_acc=0.9541 | [144.8m, 2.7 tr/m, ETA 226.6m]
+[Progress] Trial  400/1000 | last_acc=0.9296 (train=0.9506) | best_acc=0.9541 | [148.5m, 2.7 tr/m, ETA 222.8m]
+[NEW BEST] Trial  401/1000 | test_acc=0.9547 (train=0.9647) | [149.2m] | tau_m_hab=2.84682, v_thr_hab=0.341569, tau_hub=1.21695, hub_power=1.71238, hub_w_init=0.0120016
+[Progress] Trial  410/1000 | last_acc=0.9528 (train=0.9601) | best_acc=0.9547 | [152.3m, 2.7 tr/m, ETA 219.2m]
+[36m(objective pid=81655)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7bae2df519e0>
+[36m(objective pid=81655)[0m Traceback (most recent call last):
+[36m(objective pid=81655)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=81655)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=81655)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=81655)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=81655)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=81655)[0m SystemExit: 1
+[Progress] Trial  420/1000 | last_acc=0.6581 (train=0.8258) | best_acc=0.9547 | [155.8m, 2.7 tr/m, ETA 215.2m]
+[Progress] Trial  430/1000 | last_acc=0.9432 (train=0.9557) | best_acc=0.9547 | [159.8m, 2.7 tr/m, ETA 211.9m]
+[NEW BEST] Trial  440/1000 | test_acc=0.9556 (train=0.9607) | [163.1m] | tau_m_hab=7.2541, v_thr_hab=0.292537, tau_hub=2.60039, hub_power=1.70256, hub_w_init=0.0238983
+[Progress] Trial  450/1000 | last_acc=0.9453 (train=0.9552) | best_acc=0.9556 | [167.3m, 2.7 tr/m, ETA 204.4m]
+[36m(objective pid=87440)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7d9ac56459e0>
+[36m(objective pid=87440)[0m Traceback (most recent call last):
+[36m(objective pid=87440)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=87440)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=87440)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=87440)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=87440)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=87440)[0m SystemExit: 1
+[Progress] Trial  460/1000 | last_acc=0.9276 (train=0.9538) | best_acc=0.9556 | [170.6m, 2.7 tr/m, ETA 200.3m]
+[36m(objective pid=88152)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7bd4d5ec99e0>
+[36m(objective pid=88152)[0m Traceback (most recent call last):
+[36m(objective pid=88152)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=88152)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=88152)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=88152)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=88152)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=88152)[0m SystemExit: 1
+[36m(objective pid=88599)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7b00c7ac99e0>
+[36m(objective pid=88599)[0m Traceback (most recent call last):
+[36m(objective pid=88599)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=88599)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=88599)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=88599)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=88599)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=88599)[0m SystemExit: 1
+[Progress] Trial  470/1000 | last_acc=0.9422 (train=0.9495) | best_acc=0.9556 | [174.6m, 2.7 tr/m, ETA 196.9m]
+[Progress] Trial  480/1000 | last_acc=0.8618 (train=0.9204) | best_acc=0.9556 | [178.1m, 2.7 tr/m, ETA 193.0m]
+[36m(objective pid=91859)[0m Exception ignored in: <function WeakSet.__init__.<locals>._remove at 0x7fd20d2699e0>
+[36m(objective pid=91859)[0m Traceback (most recent call last):
+[36m(objective pid=91859)[0m   File "/usr/lib/python3.13/_weakrefset.py", line 39, in _remove
+[36m(objective pid=91859)[0m     def _remove(item, selfref=ref(self)):
+[36m(objective pid=91859)[0m   File "/usr/local/lib/python3.13/dist-packages/ray/_private/worker.py", line 1063, in sigterm_handler
+[36m(objective pid=91859)[0m     raise_sys_exit_with_custom_error_message(
+[36m(objective pid=91859)[0m   File "python/ray/_raylet.pyx", line 712, in ray._raylet.raise_sys_exit_with_custom_error_message
+[36m(objective pid=91859)[0m SystemExit: 1
+[Progress] Trial  490/1000 | last_acc=0.9275 (train=0.9452) | best_acc=0.9556 | [181.8m, 2.7 tr/m, ETA 189.2m]
+[Progress] Trial  500/1000 | last_acc=0.9495 (train=0.9568) | best_acc=0.9556 | [185.7m, 2.7 tr/m, ETA 185.7m]
+[Progress] Trial  510/1000 | last_acc=0.9482 (train=0.9612) | best_acc=0.9556 | [189.1m, 2.7 tr/m, ETA 181.7m]

@@ -1,0 +1,16 @@
+{
+  "hid1": 5000,
+  "hid2": 1000,
+  "samples": 1000,
+  "completed_trials": 440,
+  "finished": false,
+  "best_1ep_test_accuracy": 0.9556,
+  "best_1ep_train_accuracy": 0.9607333333333333,
+  "parameters": {
+    "tau_m_hab": 7.254096236354176,
+    "v_thr_hab": 0.2925372944910688,
+    "tau_hub": 2.600392098647199,
+    "hub_power": 1.7025608243682144,
+    "hub_w_init": 0.02389830425680141
+  }
+}

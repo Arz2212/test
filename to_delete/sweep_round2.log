@@ -1,0 +1,70 @@
+
+=== ROUND 2 SWEEP: preset=starter, epochs=12, heads=220 ===
+[starter] Ep  1/12 [1.6m] | z2 best=0.9435 (cur 0.9435, z2_l2_sqrt_lr0.01_k3_wd0.001) | z1z2 best=0.9498 (cur 0.9498, z1z2_log1p_lr0.001_k3_d0.15)
+[starter] Ep  2/12 [3.2m] | z2 best=0.9490 (cur 0.9490, z2_l2_sqrt_lr0.03_k5_wd0.001) | z1z2 best=0.9575 (cur 0.9575, z1z2_zscore_lr0.0005_k3_d0.15)
+[starter] Ep  3/12 [4.7m] | z2 best=0.9619 (cur 0.9619, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9666 (cur 0.9666, z1z2_sqrt_lr0.001_k3_d0.15)
+[starter] Ep  4/12 [6.3m] | z2 best=0.9619 (cur 0.9534, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9666 (cur 0.9663, z1z2_sqrt_lr0.001_k3_d0.15)
+[starter] Ep  5/12 [7.8m] | z2 best=0.9619 (cur 0.9562, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9666 (cur 0.9650, z1z2_sqrt_lr0.001_k3_d0.15)
+[starter] Ep  6/12 [9.4m] | z2 best=0.9619 (cur 0.9546, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9666 (cur 0.9647, z1z2_sqrt_lr0.001_k3_d0.15)
+[starter] Ep  7/12 [11.0m] | z2 best=0.9619 (cur 0.9517, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9691, z1z2_zscore_lr0.001_k1_d0.15)
+[starter] Ep  8/12 [12.5m] | z2 best=0.9619 (cur 0.9334, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9620, z1z2_zscore_lr0.001_k1_d0.15)
+[starter] Ep  9/12 [14.0m] | z2 best=0.9619 (cur 0.9507, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9649, z1z2_zscore_lr0.001_k1_d0.15)
+[starter] Ep 10/12 [15.6m] | z2 best=0.9619 (cur 0.9493, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9631, z1z2_zscore_lr0.001_k1_d0.15)
+[starter] Ep 11/12 [17.2m] | z2 best=0.9619 (cur 0.9451, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9635, z1z2_zscore_lr0.001_k1_d0.15)
+[starter] Ep 12/12 [18.7m] | z2 best=0.9619 (cur 0.9450, z2_log1p_lr0.005_k3_wd0.0001) | z1z2 best=0.9691 (cur 0.9630, z1z2_zscore_lr0.001_k1_d0.15)
+
+--- [starter] TOP 10 STRICT z2 (1000 -> 10) ---
+  1. best=0.9619 (ep 3) | ep1=0.9431 | last=0.9450 | z2_log1p_lr0.005_k3_wd0.0001
+  2. best=0.9619 (ep 3) | ep1=0.9431 | last=0.9450 | z2_log1p_lr0.005_k3_wd0.001
+  3. best=0.9618 (ep 3) | ep1=0.9423 | last=0.9462 | z2_l2_sqrt_lr0.02_k5_wd0.0001
+  4. best=0.9618 (ep 3) | ep1=0.9422 | last=0.9460 | z2_l2_sqrt_lr0.02_k5_wd0.001
+  5. best=0.9616 (ep 3) | ep1=0.9422 | last=0.9458 | z2_l2_sqrt_lr0.03_k3_wd0.0001
+  6. best=0.9616 (ep 3) | ep1=0.9421 | last=0.9458 | z2_l2_sqrt_lr0.03_k3_wd0.001
+  7. best=0.9614 (ep 3) | ep1=0.9421 | last=0.9470 | z2_l2_sqrt_lr0.03_k5_wd0.0001
+  8. best=0.9613 (ep 3) | ep1=0.9421 | last=0.9469 | z2_l2_sqrt_lr0.03_k5_wd0.001
+  9. best=0.9611 (ep 3) | ep1=0.9426 | last=0.9460 | z2_l2_sqrt_lr0.02_k3_wd0.001
+ 10. best=0.9611 (ep 3) | ep1=0.9426 | last=0.9459 | z2_l2_sqrt_lr0.02_k3_wd0.0001
+
+--- [starter] TOP 10 z1_z2 (6000 -> 10) ---
+  1. best=0.9691 (ep 7) | ep1=0.9483 | last=0.9630 | z1z2_zscore_lr0.001_k1_d0.15
+  2. best=0.9690 (ep 7) | ep1=0.9485 | last=0.9625 | z1z2_zscore_lr0.001_k1_d0
+  3. best=0.9688 (ep 7) | ep1=0.9485 | last=0.9631 | z1z2_zscore_lr0.0005_k3_d0.15
+  4. best=0.9687 (ep 7) | ep1=0.9485 | last=0.9625 | z1z2_l2_count_lr0.02_k3_d0
+  5. best=0.9686 (ep 7) | ep1=0.9404 | last=0.9619 | z1z2_count_lr0.0005_k1_d0.15
+  6. best=0.9685 (ep 7) | ep1=0.9484 | last=0.9633 | z1z2_l2_count_lr0.02_k3_d0.15
+  7. best=0.9685 (ep 7) | ep1=0.9390 | last=0.9615 | z1z2_count_lr0.0005_k1_d0
+  8. best=0.9684 (ep 7) | ep1=0.9470 | last=0.9619 | z1z2_zscore_lr0.001_k3_d0.15
+  9. best=0.9684 (ep 7) | ep1=0.9486 | last=0.9619 | z1z2_sqrt_lr0.001_k1_d0
+ 10. best=0.9684 (ep 7) | ep1=0.9485 | last=0.9616 | z1z2_sqrt_lr0.002_k1_d0.15
+
+=== ROUND 2 SWEEP: preset=tuned, epochs=6, heads=220 ===
+[tuned] Ep  1/6 [1.6m] | z2 best=0.9546 (cur 0.9546, z2_zscore_lr0.001_k3_wd0.0001) | z1z2 best=0.9594 (cur 0.9594, z1z2_l2_count_lr0.02_k3_d0)
+[tuned] Ep  2/6 [3.2m] | z2 best=0.9612 (cur 0.9612, z2_sqrt_lr0.001_k5_wd0.0001) | z1z2 best=0.9675 (cur 0.9675, z1z2_zscore_lr0.0005_k3_d0)
+[tuned] Ep  3/6 [4.8m] | z2 best=0.9612 (cur 0.9576, z2_sqrt_lr0.001_k5_wd0.0001) | z1z2 best=0.9675 (cur 0.9663, z1z2_zscore_lr0.0005_k3_d0)
+[tuned] Ep  4/6 [6.3m] | z2 best=0.9624 (cur 0.9624, z2_l2_sqrt_lr0.01_k5_wd0.0001) | z1z2 best=0.9697 (cur 0.9697, z1z2_log1p_lr0.001_k1_d0.15)
+[tuned] Ep  5/6 [7.9m] | z2 best=0.9624 (cur 0.9581, z2_l2_sqrt_lr0.01_k5_wd0.0001) | z1z2 best=0.9697 (cur 0.9671, z1z2_log1p_lr0.001_k1_d0.15)
+[tuned] Ep  6/6 [9.5m] | z2 best=0.9624 (cur 0.9369, z2_l2_sqrt_lr0.01_k5_wd0.0001) | z1z2 best=0.9697 (cur 0.9524, z1z2_log1p_lr0.001_k1_d0.15)
+
+--- [tuned] TOP 10 STRICT z2 (1000 -> 10) ---
+  1. best=0.9624 (ep 4) | ep1=0.9539 | last=0.9369 | z2_l2_sqrt_lr0.01_k5_wd0.0001
+  2. best=0.9624 (ep 4) | ep1=0.9539 | last=0.9369 | z2_l2_sqrt_lr0.01_k5_wd0.001
+  3. best=0.9619 (ep 4) | ep1=0.9539 | last=0.9372 | z2_l2_sqrt_lr0.02_k3_wd0.0001
+  4. best=0.9619 (ep 4) | ep1=0.9540 | last=0.9372 | z2_l2_sqrt_lr0.02_k3_wd0.001
+  5. best=0.9617 (ep 4) | ep1=0.9535 | last=0.9375 | z2_l2_sqrt_lr0.03_k3_wd0.001
+  6. best=0.9617 (ep 4) | ep1=0.9521 | last=0.9350 | z2_l2_sqrt_lr0.005_k5_wd0.0001
+  7. best=0.9617 (ep 4) | ep1=0.9521 | last=0.9350 | z2_l2_sqrt_lr0.005_k5_wd0.001
+  8. best=0.9615 (ep 4) | ep1=0.9535 | last=0.9373 | z2_l2_sqrt_lr0.03_k3_wd0.0001
+  9. best=0.9614 (ep 4) | ep1=0.9546 | last=0.9368 | z2_log1p_lr0.001_k5_wd0.0001
+ 10. best=0.9614 (ep 4) | ep1=0.9546 | last=0.9368 | z2_log1p_lr0.001_k5_wd0.001
+
+--- [tuned] TOP 10 z1_z2 (6000 -> 10) ---
+  1. best=0.9697 (ep 4) | ep1=0.9573 | last=0.9524 | z1z2_log1p_lr0.001_k1_d0.15
+  2. best=0.9696 (ep 4) | ep1=0.9557 | last=0.9507 | z1z2_zscore_lr0.0005_k1_d0
+  3. best=0.9695 (ep 4) | ep1=0.9565 | last=0.9481 | z1z2_l2_count_lr0.02_k1_d0
+  4. best=0.9694 (ep 4) | ep1=0.9565 | last=0.9504 | z1z2_zscore_lr0.0005_k1_d0.15
+  5. best=0.9694 (ep 4) | ep1=0.9573 | last=0.9489 | z1z2_l2_sqrt_lr0.01_k3_d0
+  6. best=0.9693 (ep 4) | ep1=0.9584 | last=0.9503 | z1z2_l2_count_lr0.01_k3_d0
+  7. best=0.9690 (ep 4) | ep1=0.9588 | last=0.9523 | z1z2_l2_count_lr0.02_k3_d0.15
+  8. best=0.9690 (ep 4) | ep1=0.9594 | last=0.9513 | z1z2_l2_count_lr0.02_k3_d0
+  9. best=0.9689 (ep 4) | ep1=0.9569 | last=0.9522 | z1z2_log1p_lr0.001_k1_d0
+ 10. best=0.9689 (ep 4) | ep1=0.9581 | last=0.9507 | z1z2_l2_count_lr0.01_k3_d0.15

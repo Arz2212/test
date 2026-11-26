@@ -1,0 +1,12 @@
+{
+  "samples": 100,
+  "best_1ep_test_accuracy": 0.7467,
+  "best_1ep_train_accuracy": 0.9513,
+  "parameters": {
+    "tau_m_hab": 8.380065030089073,
+    "v_thr_hab": 0.08397950500863711,
+    "tau_hub": 1.886160530166021,
+    "hub_power": 0.8489941591542212,
+    "hub_w_init": 0.024532269523249876
+  }
+}

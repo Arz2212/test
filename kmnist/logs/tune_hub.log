@@ -1,0 +1,56 @@
+CPU: 12 | GPU: 1 | device: cuda | gpu/trial: 0.1 | cpu/trial: 1 | concurrent: 10 | trials: 100
+Fixed parameters from kmnist_solver.py: T=50, dt=3.0, tau_m=100.0, v_thr=0.055, tau_tr=13.0, R_m=1.0, inh_R=0.01, eta=0.002, weight_bound=1.0, seed=1234
+2026-11-17 10:34:01,622	WARNING authentication_token_setup.py:85 -- Token authentication is enabled for this Ray cluster. Set RAY_AUTH_MODE=disabled to opt out. For more information, see https://docs.ray.io/en/latest/ray-security/token-auth.html
+2026-11-17 10:34:01,622	INFO authentication_token_setup.py:50 -- Generated new authentication token and saved to /root/.ray/auth_token
+2026-11-17 10:34:08,127	INFO worker.py:2038 -- Started a local Ray instance.
+╭────────────────────────────────────────────────────────────────────╮
+│ Configuration for experiment     kmnist_solver_hub_only_hyperopt   │
+├────────────────────────────────────────────────────────────────────┤
+│ Search algorithm                 SearchGenerator                   │
+│ Scheduler                        FIFOScheduler                     │
+│ Number of trials                 100                               │
+╰────────────────────────────────────────────────────────────────────╯
+
+View detailed results here: /content/ray_results/kmnist_solver_hub_only_hyperopt
+To visualize your results with TensorBoard, run: `tensorboard --logdir /tmp/ray/session_2026-11-17_10-34-01_623141_992/artifacts/2026-11-17_10-34-11/kmnist_solver_hub_only_hyperopt/driver_artifacts`
+[NEW BEST] Trial   1/100 | test_acc=0.7091 (train=0.9435) | [2.6m] | hub_power=1.04941, hub_w_init=0.117658, tau_hub=5.97423, tau_m_hab=2.88732, v_thr_hab=0.943006
+[Progress] Trial   5/100 | last_acc=0.6860 (train=0.9290) | best_acc=0.7091 | [2.6m]
+[Progress] Trial  10/100 | last_acc=0.4242 (train=0.9614) | best_acc=0.7091 | [2.6m]
+[Progress] Trial  15/100 | last_acc=0.1000 (train=0.1089) | best_acc=0.7091 | [4.9m]
+[NEW BEST] Trial  16/100 | test_acc=0.7279 (train=0.9423) | [4.9m] | hub_power=0.752587, hub_w_init=0.152688, tau_hub=5.98235, tau_m_hab=5.31839, v_thr_hab=0.714669
+[Progress] Trial  20/100 | last_acc=0.1000 (train=0.1075) | best_acc=0.7279 | [4.9m]
+[Progress] Trial  25/100 | last_acc=0.7120 (train=0.9402) | best_acc=0.7279 | [7.3m]
+[NEW BEST] Trial  26/100 | test_acc=0.7292 (train=0.9457) | [7.3m] | hub_power=0.793087, hub_w_init=0.0233865, tau_hub=4.30756, tau_m_hab=3.33221, v_thr_hab=0.10816
+[Progress] Trial  30/100 | last_acc=0.7056 (train=0.9452) | best_acc=0.7292 | [7.3m]
+[NEW BEST] Trial  35/100 | test_acc=0.7380 (train=0.9453) | [9.6m] | hub_power=0.872953, hub_w_init=0.159126, tau_hub=2.26974, tau_m_hab=7.87458, v_thr_hab=0.735311
+[NEW BEST] Trial  36/100 | test_acc=0.7407 (train=0.9449) | [9.6m] | hub_power=0.78118, hub_w_init=0.0223818, tau_hub=3.66494, tau_m_hab=5.19693, v_thr_hab=0.117876
+[Progress] Trial  40/100 | last_acc=0.4748 (train=0.9084) | best_acc=0.7407 | [9.7m]
+[NEW BEST] Trial  41/100 | test_acc=0.7424 (train=0.9278) | [11.9m] | hub_power=0.601821, hub_w_init=0.0137294, tau_hub=7.03422, tau_m_hab=4.69028, v_thr_hab=0.138369
+[Progress] Trial  45/100 | last_acc=0.6651 (train=0.8697) | best_acc=0.7424 | [12.0m]
+[NEW BEST] Trial  46/100 | test_acc=0.7467 (train=0.9513) | [12.0m] | hub_power=0.848994, hub_w_init=0.0245323, tau_hub=1.88616, tau_m_hab=8.38007, v_thr_hab=0.0839795
+[Progress] Trial  50/100 | last_acc=0.6825 (train=0.8936) | best_acc=0.7467 | [12.0m]
+[Progress] Trial  55/100 | last_acc=0.6047 (train=0.9373) | best_acc=0.7467 | [14.3m]
+[Progress] Trial  60/100 | last_acc=0.6528 (train=0.8934) | best_acc=0.7467 | [14.3m]
+[Progress] Trial  65/100 | last_acc=0.1000 (train=0.1073) | best_acc=0.7467 | [16.6m]
+[Progress] Trial  70/100 | last_acc=0.7317 (train=0.8968) | best_acc=0.7467 | [16.6m]
+[Progress] Trial  75/100 | last_acc=0.7074 (train=0.9366) | best_acc=0.7467 | [18.9m]
+[Progress] Trial  80/100 | last_acc=0.5811 (train=0.9260) | best_acc=0.7467 | [18.9m]
+[Progress] Trial  85/100 | last_acc=0.6382 (train=0.8187) | best_acc=0.7467 | [21.2m]
+[Progress] Trial  90/100 | last_acc=0.7252 (train=0.9038) | best_acc=0.7467 | [21.2m]
+[Progress] Trial  95/100 | last_acc=0.6839 (train=0.9382) | best_acc=0.7467 | [23.5m]
+[Progress] Trial 100/100 | last_acc=0.1000 (train=0.1052) | best_acc=0.7467 | [23.5m]
+2026-11-17 10:57:44,510	INFO tune.py:1007 -- Wrote the latest version of all result files and experiment state to '/content/ray_results/kmnist_solver_hub_only_hyperopt' in 0.0301s.
+
+
+================================================================
+Done in 23.5 min; trials: 100
+Best hub neuron configuration:
+  tau_m_hab    = 8.380065
+  v_thr_hab    = 0.083979505
+  tau_hub      = 1.8861605
+  hub_power    = 0.84899416
+  hub_w_init   = 0.02453227
+Best train accuracy: 0.9513
+Best test accuracy:  0.7467
+Best 1-acc:          0.2533
+================================================================

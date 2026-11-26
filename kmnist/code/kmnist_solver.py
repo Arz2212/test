@@ -28,22 +28,21 @@ eta = 0.002
 weight_bound = 1.0
 seed = 1234
 
-tau_m_hab = 4.87563
-v_thr_hab = 0.249441
-tau_hub = 4.39997
-hub_power = 1.20313
-hub_w_init = 0.0503053
+tau_m_hab = 8.380065
+v_thr_hab = 0.0839795
+tau_hub = 1.886161
+hub_power = 0.848994
+hub_w_init = 0.0245323
 
 in_dim = 784
 out_dim = 10
-hid1 = 1024
-hid2 = 128
-
+hid1 = 5000
+hid2 = 1000
 batch_size = 500
 dev_batch_size = 1000
 num_epochs = 30
 
-data_dir = "/root/snn/data/kmnist"
+data_dir = str(Path(__file__).resolve().parents[2] / "data" / "kmnist")
 
 
 class CSDPSNN(torch.nn.Module):
@@ -55,12 +54,10 @@ class CSDPSNN(torch.nn.Module):
         self.W1 = nn_param(in_dim, hid1)
         self.M1 = nn_param(hid1, hid1)
         self.V2y = nn_param(out_dim, hid1)
-        self.m1_mask = 1.0 - torch.eye(hid1, device=device)
 
         self.W2 = nn_param(hid1, hid2)
         self.M2 = nn_param(hid2, hid2)
         self.V3y = nn_param(out_dim, hid2)
-        self.m2_mask = 1.0 - torch.eye(hid2, device=device)
 
         self.C3 = nn_param(hid2, out_dim)
 
@@ -85,18 +82,15 @@ class CSDPSNN(torch.nn.Module):
         self.register_buffer("zmax1", torch.tensor(1.0))
         self.register_buffer("zmax2", torch.tensor(1.0))
 
-        self.opt_W1 = torch.optim.Adam([self.W1], lr=eta)
-        self.opt_M1 = torch.optim.Adam([self.M1], lr=eta)
-        self.opt_V2y = torch.optim.Adam([self.V2y], lr=eta)
-        self.opt_W2 = torch.optim.Adam([self.W2], lr=eta)
-        self.opt_M2 = torch.optim.Adam([self.M2], lr=eta)
-        self.opt_V3y = torch.optim.Adam([self.V3y], lr=eta)
-        self.opt_C3 = torch.optim.Adam([self.C3], lr=eta)
+        self.to(device)
+        self.opt_all = torch.optim.Adam(
+            [self.W1, self.M1, self.V2y, self.W2, self.M2, self.V3y, self.C3],
+            lr=eta,
+            fused=(device.type == "cuda"),
+        )
 
     def hub_mod(self, z, hub, phase, zmax_buf):
-        cur_max = hub.max().item()
-        if cur_max > zmax_buf.item():
-            zmax_buf.fill_(cur_max)
+        torch.maximum(zmax_buf, hub.max(), out=zmax_buf)
         factor = (hub / zmax_buf) ** hub_power - phase
         return factor * z
 
@@ -156,36 +150,27 @@ class CSDPSNN(torch.nn.Module):
             dmu = 2.0 * (y - tr_out) * mask
 
             if learn:
-                csdp_step(
-                    self.opt_W1, self.W1, z0.T @ (mod1 * R_m),
-                    (-weight_bound, weight_bound),
-                )
-                csdp_step(
-                    self.opt_M1, self.M1, z1_prev.T @ (mod1 * inh_R),
-                    (0, weight_bound), self.m1_mask,
-                )
-                csdp_step(
-                    self.opt_V2y, self.V2y, y.T @ (mod1 * R_m),
-                    (-weight_bound, weight_bound),
-                )
-
-                csdp_step(
-                    self.opt_W2, self.W2, z1.T @ (mod2 * R_m),
-                    (-weight_bound, weight_bound),
-                )
-                csdp_step(
-                    self.opt_M2, self.M2, z2_prev.T @ (mod2 * inh_R),
-                    (0, weight_bound), self.m2_mask,
-                )
-                csdp_step(
-                    self.opt_V3y, self.V3y, y.T @ (mod2 * R_m),
-                    (-weight_bound, weight_bound),
-                )
-
-                hebb_step(
-                    self.opt_C3, self.C3, z2.T @ dmu,
-                    (-weight_bound, weight_bound),
-                )
+                mod1_rm = mod1 * R_m
+                mod1_inh = mod1 * inh_R
+                mod2_rm = mod2 * R_m
+                mod2_inh = mod2 * inh_R
+                self.W1.grad = z0.T @ mod1_rm
+                self.M1.grad = z1_prev.T @ mod1_inh
+                self.V2y.grad = y.T @ mod1_rm
+                self.W2.grad = z1.T @ mod2_rm
+                self.M2.grad = z2_prev.T @ mod2_inh
+                self.V3y.grad = y.T @ mod2_rm
+                self.C3.grad = -(z2.T @ dmu)
+                self.opt_all.step()
+                self.W1.data.clamp_(-weight_bound, weight_bound)
+                self.M1.data.fill_diagonal_(0.0)
+                self.M1.data.clamp_(0, weight_bound)
+                self.V2y.data.clamp_(-weight_bound, weight_bound)
+                self.W2.data.clamp_(-weight_bound, weight_bound)
+                self.M2.data.fill_diagonal_(0.0)
+                self.M2.data.clamp_(0, weight_bound)
+                self.V3y.data.clamp_(-weight_bound, weight_bound)
+                self.C3.data.clamp_(-weight_bound, weight_bound)
 
             z1_prev = z1
             z2_prev = z2
@@ -242,6 +227,7 @@ def evaluate(model, loader, device):
     return correct / max(total, 1)
 
 
+@torch.no_grad()
 def train_epoch(model, loader, device):
     model.train()
     correct = total = 0
@@ -306,6 +292,10 @@ def train_kmnist(
     dev_batch_size=dev_batch_size,
 ):
     device = torch.device(device) if isinstance(device, str) else device
+    if device.type == "cuda":
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+        torch.set_float32_matmul_precision("high")
     torch.manual_seed(seed)
     np.random.seed(seed)
 
@@ -332,6 +322,7 @@ def train_kmnist(
 
 
 def main():
+    global tau_m_hab, v_thr_hab, tau_hub, hub_power, hub_w_init
     parser = argparse.ArgumentParser(description="KMNIST CSDP-SNN solver")
     parser.add_argument("--epochs", type=int, default=num_epochs)
     parser.add_argument(
@@ -342,7 +333,30 @@ def main():
     parser.add_argument("--data-dir", default=data_dir)
     parser.add_argument("--batch-size", type=int, default=batch_size)
     parser.add_argument("--dev-batch-size", type=int, default=dev_batch_size)
+    parser.add_argument("--tau-m-hab", type=float, default=None)
+    parser.add_argument("--v-thr-hab", type=float, default=None)
+    parser.add_argument("--tau-hub", type=float, default=None)
+    parser.add_argument("--hub-power", type=float, default=None)
+    parser.add_argument("--hub-w-init", type=float, default=None)
     args = parser.parse_args()
+
+    if args.tau_m_hab is not None:
+        tau_m_hab = args.tau_m_hab
+    if args.v_thr_hab is not None:
+        v_thr_hab = args.v_thr_hab
+    if args.tau_hub is not None:
+        tau_hub = args.tau_hub
+    if args.hub_power is not None:
+        hub_power = args.hub_power
+    if args.hub_w_init is not None:
+        hub_w_init = args.hub_w_init
+
+    print(
+        f"KMNIST CSDP-SNN | hid1={hid1}, hid2={hid2}, epochs={args.epochs}, device={args.device}\n"
+        f"Hub params: tau_m_hab={tau_m_hab}, v_thr_hab={v_thr_hab}, "
+        f"tau_hub={tau_hub}, hub_power={hub_power}, hub_w_init={hub_w_init}",
+        flush=True,
+    )
 
     train_kmnist(
         data_dir=args.data_dir,

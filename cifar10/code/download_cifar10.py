@@ -23,7 +23,7 @@ from pathlib import Path
 
 import numpy as np
 
-DEFAULT_OUT_DIR = Path(__file__).resolve().parent / "data" / "cifar10"
+DEFAULT_OUT_DIR = Path(__file__).resolve().parents[2] / "data" / "cifar10"
 
 URLS = (
     "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz",

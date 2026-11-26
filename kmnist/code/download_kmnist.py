@@ -21,7 +21,7 @@ from pathlib import Path
 
 import numpy as np
 
-DEFAULT_OUT_DIR = Path(__file__).resolve().parent / "data" / "kmnist"
+DEFAULT_OUT_DIR = Path(__file__).resolve().parents[2] / "data" / "kmnist"
 
 MIRRORS = (
     "https://codh.rois.ac.jp/kmnist/dataset/kmnist/",

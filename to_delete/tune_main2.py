@@ -1,18 +1,4 @@
-#!/usr/bin/env python3
-"""Ray Tune + HyperOpt search for main2.py hub parameters.
 
-Search space: hub_power, hub_w_init, tau_hub, tau_m_hab, v_thr_hab,
-w_decay.
-One trial = 1 training epoch on MNIST, then test accuracy.
-Objective: minimize 1 - accuracy.
-
-Run (A100):
-    uv run --active python tune_main2.py --samples 1000 --device cuda
-
-Quick smoke test:
-    uv run --active python tune_main2.py --samples 1 --device cpu \
-        --gpus-per-trial 0 --max-train-batches 1 --max-eval-batches 1
-"""
 
 from __future__ import annotations
 
