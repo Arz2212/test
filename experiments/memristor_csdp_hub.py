@@ -471,8 +471,10 @@ class MemristorCSDPHubSNN(torch.nn.Module):
         learn_out_online: bool = False,
         y_out_target: torch.Tensor | None = None,
         collect_diag: bool = False,
+        T_override: int | None = None,
     ) -> dict[str, torch.Tensor | float]:
         args = self.args
+        T_steps = T_override if T_override is not None else args.T
         B = x_flat.shape[0]
         dv = self.device
         x_img = x_flat.view(B, 1, 28, 28)
@@ -529,7 +531,7 @@ class MemristorCSDPHubSNN(torch.nn.Module):
         decay_hub = 1.0 / args.tau_hub
         r1_sum = r2_sum = rfc_sum = ry_sum = h1_sum = h2_sum = hfc_sum = 0.0
 
-        for t in range(args.T):
+        for t in range(T_steps):
             z0_img = self._encode_input(x_img)
 
             z1, p1_img, tr1, hub1, h1_v = self.tile1.step(
@@ -631,13 +633,13 @@ class MemristorCSDPHubSNN(torch.nn.Module):
         res: dict[str, torch.Tensor | float] = {"cnt_ro": cnt_ro, "cnt_out": cnt_out}
         if collect_diag:
             res.update({
-                "r1": r1_sum / args.T,
-                "r2": r2_sum / args.T,
-                "rfc": rfc_sum / args.T,
-                "ry": ry_sum / args.T,
-                "h1": h1_sum / args.T,
-                "h2": h2_sum / args.T,
-                "hfc": hfc_sum / args.T,
+                "r1": r1_sum / T_steps,
+                "r2": r2_sum / T_steps,
+                "rfc": rfc_sum / T_steps,
+                "ry": ry_sum / T_steps,
+                "h1": h1_sum / T_steps,
+                "h2": h2_sum / T_steps,
+                "hfc": hfc_sum / T_steps,
                 "zm1": self.tile1.zmax.mean().item(),
                 "zm2": self.tile2.zmax.mean().item() if self.tile2 is not None else 0.0,
                 "zmfc": self.fc.zmax.item(),
@@ -648,9 +650,12 @@ class MemristorCSDPHubSNN(torch.nn.Module):
     def crossbar_delta_update(self, cnt_ro: torch.Tensor, y_onehot: torch.Tensor) -> torch.Tensor:
         """Pure memristor-crossbar readout on raw firing rates (cnt / T) — NO zscore!
         Mathematically equivalent to non-resetting integrate-only output neurons V_out(T)/T.
+        Optional analog memristor read noise (--ro-noise) regularizes training.
         """
         B = y_onehot.shape[0]
         rates = cnt_ro / self.args.T  # pure firing rate in [0, 1]
+        if self.args.ro_noise > 0.0:
+            rates = (rates + self.args.ro_noise * torch.randn_like(rates)).clamp_(0.0, 1.0)
         logits = rates @ self.C_out + self.b_out
         probs = F.softmax(logits, dim=1)
         err = (probs - y_onehot) / B
@@ -682,11 +687,29 @@ class MemristorCSDPHubSNN(torch.nn.Module):
         return cnt_out
 
     @torch.no_grad()
-    def predict(self, x_flat: torch.Tensor) -> torch.Tensor:
-        res = self.simulate(x_flat, learn_hidden=False, learn_out_online=False)
+    def predict(self, x_flat: torch.Tensor, T_override: int | None = None) -> torch.Tensor:
+        T_use = T_override if T_override is not None else (self.args.T_eval if self.args.T_eval > 0 else self.args.T)
+        res = self.simulate(x_flat, learn_hidden=False, learn_out_online=False, T_override=T_use)
         if self.args.out_mode == "crossbar_delta":
-            return (res["cnt_ro"] / self.args.T) @ self.C_out + self.b_out
+            return (res["cnt_ro"] / T_use) @ self.C_out + self.b_out
         return res["cnt_out"]
+
+
+def apply_microsaccade(x_flat: torch.Tensor, max_shift: int) -> torch.Tensor:
+    """Biological retinal microsaccade: random ±max_shift pixel jitter on 28x28 sensor grid."""
+    if max_shift <= 0:
+        return x_flat
+    B = x_flat.shape[0]
+    img = x_flat.view(B, 1, 28, 28)
+    padded = F.pad(img, (max_shift, max_shift, max_shift, max_shift), mode="constant", value=0.0)
+    dx = torch.randint(0, 2 * max_shift + 1, (B,), device=x_flat.device)
+    dy = torch.randint(0, 2 * max_shift + 1, (B,), device=x_flat.device)
+    # Vectorized crop per sample
+    ys = torch.arange(28, device=x_flat.device).view(1, 28, 1) + dy.view(B, 1, 1)
+    xs = torch.arange(28, device=x_flat.device).view(1, 1, 28) + dx.view(B, 1, 1)
+    b_idx = torch.arange(B, device=x_flat.device).view(B, 1, 1)
+    out = padded[b_idx, 0, ys, xs].view(B, 784)
+    return out
 
 
 @torch.no_grad()
@@ -708,10 +731,12 @@ def train_epoch(
     n_batches = len(loader)
     for i, (xb, yb) in enumerate(loader):
         xb, yb = xb.to(device), yb.float().to(device)
+        if args.microsaccade > 0:
+            xb = apply_microsaccade(xb, args.microsaccade)
         B = xb.shape[0]
 
         if args.hard_neg_prob > 0.0:
-            clean_scores = model.predict(xb)
+            clean_scores = model.predict(xb, T_override=min(15, args.T))
             yn = hard_neg_labels(yb, clean_scores, args.hard_neg_prob, temp=args.hard_neg_temp)
         else:
             yn = uniform_neg_labels(yb, model.out_dim)
@@ -792,6 +817,9 @@ def parse_args() -> argparse.Namespace:
 
     # SNN dynamics
     p.add_argument("--T", type=int, default=30)
+    p.add_argument("--T-eval", type=int, default=0)
+    p.add_argument("--ro-noise", type=float, default=0.0)
+    p.add_argument("--microsaccade", type=int, default=0)
     p.add_argument("--dt", type=float, default=3.0)
     p.add_argument("--tau-m", type=float, default=100.0)
     p.add_argument("--v-thr", type=float, default=0.055)
