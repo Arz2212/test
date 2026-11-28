@@ -526,6 +526,10 @@ class AllSpikingMemristorCSDPHubSNN(torch.nn.Module):
                     # Softmax on spiking trace tr_out -> local error (y - probs) / B
                     probs = F.softmax(tr_out / args.out_temp, dim=1)
                     dmu = (y_out_target - probs) / B
+                    if args.max_out_rate < 1.0:
+                        # Local firing-rate homeostasis: stop potentiating saturated output neurons
+                        sat_mask = (tr_out >= args.max_out_rate) & (dmu > 0.0)
+                        dmu = dmu.masked_fill(sat_mask, 0.0)
                 else:
                     raise ValueError(f"Unsupported online rule: {args.out_rule}")
 
@@ -593,6 +597,10 @@ class AllSpikingMemristorCSDPHubSNN(torch.nn.Module):
         rates_out = cnt_out / self.args.T
         probs = F.softmax(rates_out / self.args.out_temp, dim=1)
         err = (probs - y_onehot) / B
+        if self.args.max_out_rate < 1.0:
+            # Local firing-rate homeostasis: prevent lif_out saturation at 100/100 spikes
+            sat_mask = (rates_out >= self.args.max_out_rate) & (err < 0.0)
+            err = err.masked_fill(sat_mask, 0.0)
         self.C_out.grad = rates_ro.T @ err + self.args.wd_out * self.C_out.data
         if self.b_out is not None:
             self.b_out.grad = err.sum(dim=0)
@@ -744,6 +752,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--neg-target-rate", type=float, default=0.0)
     p.add_argument("--out-warmup", type=int, default=5)
     p.add_argument("--out-temp", type=float, default=0.1)
+    p.add_argument("--max-out-rate", type=float, default=1.0)
 
     # Optimization
     p.add_argument("--eta", type=float, default=0.002)
