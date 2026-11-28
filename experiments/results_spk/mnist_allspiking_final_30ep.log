@@ -1,0 +1,38 @@
+=== SMOKE TEST: standalone kmnist_solver_memristor_spiking_hub.py (1 ep) ===
+[KMNIST] AllSpikingMemristorCSDPHubSNN (100% SPIKING LIFNode output, ZERO weight sharing, NO zscore) | t1=196x(25->64)->p7 t2=49x(576->80)->p7 tc=25x(121->32) fc=2000 | lif_out=9856->10 (R_out=0.06, v_thr=0.055) | T=30 T_eval=100 hard_neg=0.5 | memristors=17.54M
+Epoch  1/1  Train: 0.8770  Test: 0.8540  Best: 0.8540 (ep 1)  [5.24m] | r=(0.031,0.046,0.056) h=(0.63,0.65,0.63) out(ry=0.372,cmax=66.5,tie=0.027,sat=0.002)
+FINAL Best: 0.8540 at epoch 1 in 5.24m
+=== PHASE 3 FINAL RE-VALIDATION: standalone mnist_solver_memristor_spiking_hub.py (30 ep) ===
+[MNIST] AllSpikingMemristorCSDPHubSNN (100% SPIKING LIFNode output, ZERO weight sharing, NO zscore) | t1=196x(25->64)->p7 t2=49x(576->80)->p7 tc=25x(121->32) fc=2000 | lif_out=9856->10 (R_out=0.06, v_thr=0.055) | T=30 T_eval=100 hard_neg=0.5 | memristors=17.54M
+Epoch  1/30  Train: 0.9314  Test: 0.9748  Best: 0.9748 (ep 1)  [5.23m] | r=(0.031,0.049,0.060) h=(0.65,0.67,0.65) out(ry=0.333,cmax=76.7,tie=0.005,sat=0.003)
+Epoch  2/30  Train: 0.9787  Test: 0.9770  Best: 0.9770 (ep 2)  [10.43m] | r=(0.031,0.050,0.064) h=(0.64,0.66,0.63) out(ry=0.338,cmax=78.0,tie=0.004,sat=0.005)
+Epoch  3/30  Train: 0.9836  Test: 0.9811  Best: 0.9811 (ep 3)  [15.63m] | r=(0.031,0.053,0.067) h=(0.66,0.67,0.64) out(ry=0.344,cmax=81.3,tie=0.003,sat=0.008)
+Epoch  4/30  Train: 0.9847  Test: 0.9811  Best: 0.9811 (ep 3)  [20.83m] | r=(0.031,0.054,0.069) h=(0.65,0.68,0.65) out(ry=0.344,cmax=83.3,tie=0.002,sat=0.011)
+Epoch  5/30  Train: 0.9873  Test: 0.9813  Best: 0.9813 (ep 5)  [26.04m] | r=(0.031,0.053,0.067) h=(0.64,0.66,0.62) out(ry=0.356,cmax=82.2,tie=0.002,sat=0.009)
+Epoch  6/30  Train: 0.9881  Test: 0.9828  Best: 0.9828 (ep 6)  [31.24m] | r=(0.031,0.055,0.070) h=(0.66,0.68,0.64) out(ry=0.369,cmax=82.5,tie=0.003,sat=0.008)
+Epoch  7/30  Train: 0.9889  Test: 0.9816  Best: 0.9828 (ep 6)  [36.44m] | r=(0.031,0.056,0.071) h=(0.65,0.68,0.65) out(ry=0.369,cmax=83.5,tie=0.004,sat=0.007)
+Epoch  8/30  Train: 0.9899  Test: 0.9822  Best: 0.9828 (ep 6)  [41.64m] | r=(0.031,0.053,0.069) h=(0.64,0.66,0.63) out(ry=0.365,cmax=85.7,tie=0.003,sat=0.010)
+Epoch  9/30  Train: 0.9902  Test: 0.9810  Best: 0.9828 (ep 6)  [46.84m] | r=(0.031,0.055,0.070) h=(0.65,0.67,0.64) out(ry=0.366,cmax=85.0,tie=0.002,sat=0.009)
+Epoch 10/30  Train: 0.9912  Test: 0.9813  Best: 0.9828 (ep 6)  [52.04m] | r=(0.031,0.055,0.070) h=(0.65,0.67,0.64) out(ry=0.368,cmax=85.8,tie=0.003,sat=0.013)
+Epoch 11/30  Train: 0.9913  Test: 0.9810  Best: 0.9828 (ep 6)  [57.25m] | r=(0.031,0.055,0.069) h=(0.65,0.68,0.65) out(ry=0.374,cmax=84.2,tie=0.002,sat=0.007)
+Epoch 12/30  Train: 0.9922  Test: 0.9819  Best: 0.9828 (ep 6)  [62.44m] | r=(0.032,0.057,0.069) h=(0.66,0.68,0.65) out(ry=0.374,cmax=84.9,tie=0.002,sat=0.011)
+Epoch 13/30  Train: 0.9923  Test: 0.9827  Best: 0.9828 (ep 6)  [67.64m] | r=(0.031,0.056,0.072) h=(0.65,0.68,0.64) out(ry=0.378,cmax=84.6,tie=0.003,sat=0.007)
+Epoch 14/30  Train: 0.9930  Test: 0.9834  Best: 0.9834 (ep 14)  [72.84m] | r=(0.032,0.057,0.068) h=(0.67,0.68,0.63) out(ry=0.382,cmax=84.3,tie=0.002,sat=0.007)
+Epoch 15/30  Train: 0.9932  Test: 0.9823  Best: 0.9834 (ep 14)  [78.03m] | r=(0.032,0.056,0.071) h=(0.66,0.68,0.64) out(ry=0.380,cmax=84.2,tie=0.003,sat=0.009)
+Epoch 16/30  Train: 0.9938  Test: 0.9824  Best: 0.9834 (ep 14)  [83.23m] | r=(0.032,0.057,0.071) h=(0.67,0.68,0.64) out(ry=0.382,cmax=84.7,tie=0.002,sat=0.008)
+Epoch 17/30  Train: 0.9940  Test: 0.9849  Best: 0.9849 (ep 17)  [88.42m] | r=(0.032,0.056,0.069) h=(0.66,0.68,0.64) out(ry=0.382,cmax=83.9,tie=0.003,sat=0.008)
+Epoch 18/30  Train: 0.9950  Test: 0.9835  Best: 0.9849 (ep 17)  [93.63m] | r=(0.031,0.056,0.071) h=(0.65,0.67,0.64) out(ry=0.383,cmax=84.4,tie=0.002,sat=0.008)
+Epoch 19/30  Train: 0.9954  Test: 0.9849  Best: 0.9849 (ep 17)  [98.83m] | r=(0.032,0.057,0.071) h=(0.66,0.69,0.64) out(ry=0.386,cmax=83.4,tie=0.002,sat=0.006)
+Epoch 20/30  Train: 0.9957  Test: 0.9854  Best: 0.9854 (ep 20)  [104.03m] | r=(0.032,0.057,0.071) h=(0.66,0.69,0.65) out(ry=0.386,cmax=83.7,tie=0.002,sat=0.007)
+Epoch 21/30  Train: 0.9957  Test: 0.9848  Best: 0.9854 (ep 20)  [109.23m] | r=(0.031,0.056,0.068) h=(0.65,0.68,0.63) out(ry=0.388,cmax=83.6,tie=0.003,sat=0.006)
+Epoch 22/30  Train: 0.9960  Test: 0.9853  Best: 0.9854 (ep 20)  [114.43m] | r=(0.032,0.057,0.070) h=(0.67,0.68,0.64) out(ry=0.389,cmax=83.4,tie=0.002,sat=0.006)
+Epoch 23/30  Train: 0.9965  Test: 0.9859  Best: 0.9859 (ep 23)  [119.63m] | r=(0.032,0.056,0.069) h=(0.66,0.68,0.64) out(ry=0.389,cmax=83.5,tie=0.002,sat=0.005)
+Epoch 24/30  Train: 0.9966  Test: 0.9856  Best: 0.9859 (ep 23)  [124.83m] | r=(0.032,0.057,0.071) h=(0.66,0.68,0.64) out(ry=0.390,cmax=83.4,tie=0.003,sat=0.006)
+Epoch 25/30  Train: 0.9969  Test: 0.9856  Best: 0.9859 (ep 23)  [130.04m] | r=(0.031,0.057,0.070) h=(0.65,0.68,0.65) out(ry=0.392,cmax=83.2,tie=0.003,sat=0.005)
+Epoch 26/30  Train: 0.9972  Test: 0.9860  Best: 0.9860 (ep 26)  [135.23m] | r=(0.032,0.057,0.070) h=(0.66,0.68,0.63) out(ry=0.392,cmax=83.2,tie=0.003,sat=0.005)
+Epoch 27/30  Train: 0.9974  Test: 0.9861  Best: 0.9861 (ep 27)  [140.43m] | r=(0.032,0.057,0.072) h=(0.66,0.69,0.67) out(ry=0.391,cmax=83.4,tie=0.003,sat=0.005)
+Epoch 28/30  Train: 0.9971  Test: 0.9866  Best: 0.9866 (ep 28)  [145.63m] | r=(0.032,0.057,0.070) h=(0.66,0.69,0.65) out(ry=0.392,cmax=83.2,tie=0.003,sat=0.005)
+Epoch 29/30  Train: 0.9973  Test: 0.9867  Best: 0.9867 (ep 29)  [150.82m] | r=(0.032,0.058,0.070) h=(0.67,0.68,0.65) out(ry=0.391,cmax=83.1,tie=0.003,sat=0.005)
+Epoch 30/30  Train: 0.9973  Test: 0.9866  Best: 0.9867 (ep 29)  [156.02m] | r=(0.032,0.057,0.073) h=(0.66,0.68,0.65) out(ry=0.392,cmax=83.3,tie=0.002,sat=0.005)
+FINAL Best: 0.9867 at epoch 29 in 156.02m
+PHASE3_ALLSPIKING_DONE
